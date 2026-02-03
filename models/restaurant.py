@@ -111,4 +111,5 @@ class Restaurant:
     def __str__(self) -> str:
         """String representation for display purposes."""
         cuisine = f" ({self.cuisine_type})" if self.cuisine_type else ""
-        return f"{self.name}{cuisine} - {self.location}, {self.country} - {self.get_price_symbol()}"
+        return f"{self.name}{cuisine} - {self.location},\
+              {self.country} - {self.get_price_symbol()}"
