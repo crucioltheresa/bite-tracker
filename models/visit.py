@@ -136,3 +136,31 @@ class Visit:
 
         # Normalize meals_type to lowercase for consistency
         self.meal_type = self.meal_type.lower().strip()
+
+    def get_rating_starts(self) -> str:
+        """Returns a string of star symbols (★) representing the rating."""
+        return "★" * self.rating + "☆" * (5 - self.rating)
+
+    def get_service_rating_stars(self) -> str:
+        """String of stars or "N/A" if not rated"""
+        if self.service_rating is None:
+            return "N/A"
+        return "★" * self.service_rating + "☆" * (5 - self.service_rating)
+
+    def get_formatted_date(self) -> str:
+        """Returns the visit date formatted as 'Month Year'."""
+        return self.visit_date.strftime("%B %Y")
+
+    def get_formatted_cost(self) -> str:
+        """Returns the total cost formatted as currency or 'N/A'."""
+        if self.total_cost is None:
+            return "N/A"
+        return f"${self.total_cost:,.2f}"
+
+    def __str__(self) -> str:
+        """String representation for display purposes."""
+        return (
+            f"Visit: {self.get_formatted_date()} | "
+            f"{self.meal_type.capitalize()} | "
+            f"Rating: {self.get_rating_starts()} | "
+        )
