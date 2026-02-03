@@ -1,4 +1,5 @@
-"""Restaurant domain model.
+"""
+Restaurant domain model.
 Defines the Restaurant class with built-in validation.
 Enforces data integrity and domain rules.
 """
@@ -49,8 +50,10 @@ class Restaurant:
         self._validate()
 
     def _validate(self):
-        """Validate all fields according to domain rules.
-        Raises ValidationError if any validation rule is violated"."""
+        """
+        Validate all fields according to domain rules.
+        Raises ValidationError if any validation rule is violated".
+        """
 
         if not self.name or not self.name.strip():
             raise ValidationError("Restaurant name is required.")
@@ -83,3 +86,13 @@ class Restaurant:
             self.phone = self.phone.strip()
         if self.website:
             self.website = self.website.strip()
+
+    def get_price_symbol(self) -> str:
+        """Returns a string os euro symbols (€, €€, etc.)
+        based on price_range."""
+        return '€' * self.price_range
+
+    def __str__(self) -> str:
+        """String representation for display purposes."""
+        cuisine = f"({self.cuisine_type})" if self.cuisine_type else ""
+        return f"{self.name}{cuisine} - {self.location} - {self.get_price_symbol()}"
