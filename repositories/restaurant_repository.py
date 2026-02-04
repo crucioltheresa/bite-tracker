@@ -110,3 +110,49 @@ class SqliteRestaurantRepository(RestaurantRepository):
 
         except sqlite3.Error as e:
             raise RepositoryError(f"Failed to add restaurant: {e}")
+
+    def get_by_id(self, restaurant_id: int) -> Optional[Restaurant]:
+        """
+        Retrieve a restaurant by its ID.
+        Raises: RepositoryError: If database operation fails.
+        """
+        try:
+            conn = sqlite3.connect(self.db_path)
+            conn.row_factory = sqlite3.Row  # Enable named column access
+            cursor = conn.cursor()
+
+            cursor.execute(
+                "SELECT * FROM restaurants WHERE id = ?",
+                (restaurant_id,)
+            )
+            row = cursor.fetchone()
+
+            conn.close()
+
+            if row is None:
+                return None
+
+            return self._row_to_restaurant(row)
+
+        except sqlite3.Error as e:
+            raise RepositoryError(f"Failed to get restaurant by ID: {e}")
+
+    def get_all(self) -> List[Restaurant]:
+        """
+        Retrieve all restaurants.
+        Raises: RepositoryError: If database operation fails.
+        """
+        try:
+            conn = sqlite3.connect(self.db_path)
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            cursor.execute("SELECT * FROM restaurants ORDER BY name")
+            rows = cursor.fetchall()
+
+            conn.close()
+
+            return [self._row_to_restaurant(row) for row in rows]
+
+        except sqlite3.Error as e:
+            raise RepositoryError(f"Failed to get all restaurants: {e}")
