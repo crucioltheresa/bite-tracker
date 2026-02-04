@@ -213,3 +213,52 @@ class SqliteRestaurantRepository(RestaurantRepository):
 
         except sqlite3.Error as e:
             raise RepositoryError(f"Failed to delete restaurant: {e}")
+
+    def search_by_name(self, name: str) -> List[Restaurant]:
+        """
+        Search restaurants by partial name match.
+        Raises: RepositoryError: If database operation fails.
+        """
+        try:
+            conn = sqlite3.connect(self.db_path)
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            # Use LIKE with wildcards for partial matching
+            # LOWER() makes search case-insensitive
+            search_term = f"%{name.lower()}%"
+            cursor.execute(
+                "SELECT * FROM restaurants WHERE LOWER(name) like ? ORDER BY name", (search_term,)
+            )
+            rows = cursor.fetchall()
+
+            conn.close()
+
+            return [self._row_to_restaurant(row) for row in rows]
+
+        except sqlite3.Error as e:
+            raise RepositoryError(f"Failed to search restaurants by name: {e}")
+
+    def filter_by_country(self, country: str) -> List[Restaurant]:
+        """
+        Filter restaurants by country.
+        Raises: RepositoryError: If database operation fails
+        """
+        try:
+            conn = sqlite3.connect(self.db_path)
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            # Exact match but case-insensitive
+            cursor.execute(
+                "SELECT * FROM restaurants WHERE LOWER(country) = LOWER(?) ORDER BY name", (country,)
+            )
+
+            rows = cursor.fetchall()
+
+            conn.close()
+
+            return [self._row_to_restaurant(row) for row in rows]
+
+        except sqlite3.Error as e:
+            raise RepositoryError(f"Failed to filter restaurants by country: {e}")
