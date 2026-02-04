@@ -162,5 +162,5 @@ class Visit:
         return (
             f"Visit: {self.get_formatted_date()} | "
             f"{self.meal_type.capitalize()} | "
-            f"Rating: {self.get_rating_starts()} | "
+            f"Rating: {self.get_rating_stars()} | "
         )
