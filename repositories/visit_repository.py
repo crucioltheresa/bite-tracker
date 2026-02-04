@@ -137,3 +137,70 @@ class SqliteVisitRepository(VisitRepository):
             raise RepositoryError(f"Failed to add visit: Invalid restaurant_id or constraint violation ({e})")
         except sqlite3.Error as e:
             raise RepositoryError(f"Failed to add visit: {e}")
+
+    def get_by_id(self, visit_id: int) -> Optional[Visit]:
+        """
+        Retrieve a visit by its ID.
+        Raises: RepositoryError: If database operation fails.
+        """
+        try:
+            conn = sqlite3.connect(self.db_path)
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            cursor.execute("SELECT * FROM visits WHERE id = ?", (visit_id,))
+            row = cursor.fetchone()
+
+            conn.close()
+
+            if row is None:
+                return None
+
+            return self._row_to_visit(row)
+
+        except sqlite3.Error as e:
+            raise RepositoryError(f"Failed to get visit: {e}")
+
+    def get_by_restaurant_id(self, restaurant_id: int) -> Optional[Visit]:
+        """
+        Retrieve the visit for a specific restaurant.
+        Raises: RepositoryError: If database operation fails.
+        """
+        try:
+            conn = sqlite3.connect(self.db_path)
+            conn.rowfactory = sqlite3.Row
+            cursor = conn.cursor()
+
+            cursor.execute("SELECT * FROM visits WHERE restaurant_id = ?", (restaurant_id,))
+
+            row = cursor.fetchone()
+
+            conn.close()
+
+            if row is None:
+                return None
+
+            return self._row_to_visit(row)
+
+        except sqlite3.Error as e:
+            raise RepositoryError(f"Failed to get visit: {e}")
+
+    def get_all(self) -> List[Visit]:
+        """
+        Retrieve all visits.
+        Raises: RepositoryError: If database operation fails.
+        """
+        try:
+            conn = sqlite3.connect(self.db_path)
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            cursor.execute("SELECT * FROM visits order by visit_date DESC")
+            rows = cursor.fetchall()
+
+            conn.close()
+
+            return [self._row_to_visit(row) for row in rows]
+
+        except sqlite3.Error as e:
+            raise RepositoryError(f"Failed to get visits: {e}")
