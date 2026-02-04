@@ -291,3 +291,43 @@ class SqliteVisitRepository(VisitRepository):
 
         except sqlite3.Error as e:
             raise RepositoryError(f"Failed to delete visit by restaurant_id: {e}")
+
+    def filter_by_meal_type(self, meal_type: str) -> List[Visit]:
+        """
+        Retrieve visits filtered by meal type.
+        Raises: RepositoryError: If database operation fails.
+        """
+        try:
+            conn = sqlite3.connect(self.db_path)
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            cursor.execute("SELECT * FROM visits WHERE meal_type = ? ORDER BY visit_date DESC", (meal_type,))
+            rows = cursor.fetchall()
+
+            conn.close()
+
+            return [self._row_to_visit(row) for row in rows]
+
+        except sqlite3.Error as e:
+            raise RepositoryError(f"Failed to filter visits by meal type: {e}")
+
+    def filter_by_rating(self, min_rating: int) -> List[Visit]:
+        """
+        Retrieve visits by minimum rating.
+        Raises: RepositoryError: If database operation fails.
+        """
+        try:
+            conn = sqlite3.connect(self.db_path)
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            cursor.execute("SELECT * FROM visits WHERE rating >= ? ORDER BY visit_date DESC", (min_rating,))
+            rows = cursor.fetchall()
+
+            conn.close()
+
+            return [self._row_to_visit(row) for row in rows]
+
+        except sqlite3.Error as e:
+            raise RepositoryError(f"Failed to filter visits by rating: {e}")
