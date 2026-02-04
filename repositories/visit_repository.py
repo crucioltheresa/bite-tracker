@@ -168,7 +168,7 @@ class SqliteVisitRepository(VisitRepository):
         """
         try:
             conn = sqlite3.connect(self.db_path)
-            conn.rowfactory = sqlite3.Row
+            conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
 
             cursor.execute("SELECT * FROM visits WHERE restaurant_id = ?", (restaurant_id,))
