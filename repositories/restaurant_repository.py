@@ -7,7 +7,7 @@ import sqlite3
 from pathlib import Path
 from typing import List, Optional
 from models import Restaurant
-from exceptions import RepositoryError, NotFoundError
+from exceptions import RepositoryError
 from repositories.base import RestaurantRepository
 
 

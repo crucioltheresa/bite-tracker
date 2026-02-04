@@ -6,7 +6,7 @@ Manages the relationship between visits and restaurants.
 
 import sqlite3
 from pathlib import Path
-from datetime import datetime
+from datetime import date
 from typing import List, Optional
 from models import Visit
 from exceptions import RepositoryError
@@ -62,3 +62,78 @@ class SqliteVisitRepository(VisitRepository):
 
         except sqlite3.Error as e:
             raise RepositoryError(f"Failed to initialize database: {e}")
+
+    def _row_to_visit(self, row: sqlite3.Row) -> Visit:
+        """ Convert database row to a Visit object. """
+        return Visit(
+            id=row['id'],
+            restaurant_id=row['restaurant_id'],
+            visit_date=date.fromisoformat(row['visit_date']),
+            rating=row['rating'],
+            meal_type=row['meal_type'],
+            service_rating=row['service_rating'],
+            dishes_ordered=row['dishes_ordered'],
+            recommended_dishes=row['recommended_dishes'],
+            beverage_ordered=row['beverage_ordered'],
+            total_cost=row['total_cost'],
+            notes=row['notes'],
+            would_return=bool(row['would_return'])
+        )
+
+    def add(self, visit: Visit) -> Visit:
+        """ Add a new visit to the database.
+        Raises: RepositoryError: If database operation fails.
+        """
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+
+            # Enable foreign key constraints
+            cursor.execute("PRAGMA foreign_keys = ON;")
+
+            cursor.execute("""
+                        INSERT INTO visits (
+                    restaurant_id, visit_date, rating, meal_type,
+                    service_rating, dishes_ordered, recommended_dishes,
+                    beverage_ordered, total_cost, notes, would_return
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                visit.restaurant_id,
+                visit.visit_date,
+                visit.rating,
+                visit.meal_type,
+                visit.service_rating,
+                visit.dishes_ordered,
+                visit.recommended_dishes,
+                visit.beverage_ordered,
+                visit.total_cost,
+                visit.notes,
+                1 if visit.would_return else 0
+            ))
+
+            visit_id = cursor.lastrowid
+
+            conn.commit()
+            conn.close()
+
+            # Return new Visit object with ID
+            return Visit(
+                id=visit_id,
+                restaurant_id=visit.restaurant_id,
+                visit_date=visit.visit_date,
+                rating=visit.rating,
+                meal_type=visit.meal_type,
+                service_rating=visit.service_rating,
+                dishes_ordered=visit.dishes_ordered,
+                recommended_dishes=visit.recommended_dishes,
+                beverage_ordered=visit.beverage_ordered,
+                total_cost=visit.total_cost,
+                notes=visit.notes,
+                would_return=visit.would_return
+            )
+
+        except sqlite3.IntegrityError as e:
+            # Foreign key violation or other constraint error
+            raise RepositoryError(f"Failed to add visit: Invalid restaurant_id or constraint violation ({e})")
+        except sqlite3.Error as e:
+            raise RepositoryError(f"Failed to add visit: {e}")
