@@ -70,3 +70,45 @@ class RestaurantService:
 
         # Persist to database
         return self._restaurant_repo.add(restaurant)
+
+    def get_restaurant(self, restaurant_id: int) -> Restaurant:
+        """
+        Get a restaurant by ID.
+        Raises: NotFoundError: If no restaurant with the given ID exists
+        RepositoryError: If database operation fails
+        """
+        restaurant = self._restaurant_repo.get_by_id(restaurant_id)
+        if restaurant is None:
+            raise NotFoundError(f"Restaurant with ID {restaurant_id} not found")
+
+        return restaurant
+
+    def get_all_restaurants(self) -> List[Restaurant]:
+        """
+        Get all restaurants.
+        Raises: RepositoryError: If database operation fails
+        """
+        return self._restaurant_repo.get_all()
+
+    def search_restaurants(self, name: str) -> List[Restaurant]:
+        """
+        Search restaurant by partial name match
+        Raises: ValidationError: If search term is empty
+        RepositoryError: If database operation fails
+        """
+        if not name or not name.strip():
+            raise ValidationError("Search term cannot be empty")
+
+        return self._restaurant_repo.search_by_name(name.strip())
+
+    def get_restaurants_by_country(self, country: str) -> List[Restaurant]:
+        """
+        Filter restaurants by country
+        Raises: ValidationError: If country is empty
+        RepositoryError: If database operation fails
+        """
+        if not country or not country.strip():
+            raise ValidationError("Country cannot be empty")
+
+        return self._restaurant_repo.get_by_country(country.strip())
+
