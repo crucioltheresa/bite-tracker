@@ -204,3 +204,90 @@ class SqliteVisitRepository(VisitRepository):
 
         except sqlite3.Error as e:
             raise RepositoryError(f"Failed to get visits: {e}")
+
+    def update(self, visit: Visit) -> Visit:
+        """
+        Update an existing visit.
+        Raises: RepositoryError: If database operation fails.
+        """
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+
+            # Enable foreign key constraints
+            cursor.execute("PRAGMA foreign_keys = ON;")
+
+            cursor.execute("""
+                UPDATE visits
+                        SET restaurant_id = ?, visit_date = ?, rating = ?, meal_type = ?,
+                            service_rating = ?, dishes_ordered = ?, recommended_dishes = ?,
+                            beverage_ordered = ?, total_cost = ?, notes = ?, would_return = ?
+                        WHERE id = ?
+            """, (
+                visit.restaurant_id,
+                visit.visit_date,
+                visit.rating,
+                visit.meal_type,
+                visit.service_rating,
+                visit.dishes_ordered,
+                visit.recommended_dishes,
+                visit.beverage_ordered,
+                visit.total_cost,
+                visit.notes,
+                1 if visit.would_return else 0,
+                visit.id
+            ))
+
+            rows_affected = cursor.rowcount
+
+            conn.commit()
+            conn.close()
+
+            return rows_affected > 0
+
+        except sqlite3.IntegrityError as e:
+            raise RepositoryError(f"Failed to update visit: Invalid restaurant_id ({e})")
+        except sqlite3.Error as e:
+            raise RepositoryError(f"Failed to update visit: {e}")
+
+    def delete(self, visit_id: int) -> bool:
+        """
+        Delete a visit by its ID.
+        Raises: RepositoryError: If database operation fails.
+        """
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+
+            cursor.execute("DELETE FROM visits WHERE id = ?", (visit_id,))
+
+            rows_affected = cursor.rowcount
+
+            conn.commit()
+            conn.close()
+
+            return rows_affected > 0
+
+        except sqlite3.Error as e:
+            raise RepositoryError(f"Failed to delete visit: {e}")
+
+    def delete_by_restaurant_id(self, restaurant_id: int) -> bool:
+        """
+        Delete the visit associated with a restaurant
+        Raises: RepositoryError: If database operation fails.
+        """
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+
+            cursor.execute("DELETE FROM visits WHERE restaurant_id = ?", (restaurant_id,))
+
+            rows_affected = cursor.rowcount
+
+            conn.commit()
+            conn.close()
+
+            return rows_affected > 0
+
+        except sqlite3.Error as e:
+            raise RepositoryError(f"Failed to delete visit by restaurant_id: {e}")
