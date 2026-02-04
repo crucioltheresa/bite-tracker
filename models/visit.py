@@ -66,7 +66,7 @@ class Visit:
         Raises ValidationError if any validation rule is violated.
         """
 
-        if not isinstance(self.restaurant_id, int) or self.resaurant_id <= 0:
+        if not isinstance(self.restaurant_id, int) or self.restaurant_id <= 0:
             raise ValidationError("Valid restaurant ID is required.")
 
         if not isinstance(self.visit_date, date):
