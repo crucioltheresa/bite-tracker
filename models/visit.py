@@ -137,7 +137,7 @@ class Visit:
         # Normalize meals_type to lowercase for consistency
         self.meal_type = self.meal_type.lower().strip()
 
-    def get_rating_starts(self) -> str:
+    def get_rating_stars(self) -> str:
         """Returns a string of star symbols (★) representing the rating."""
         return "★" * self.rating + "☆" * (5 - self.rating)
 
