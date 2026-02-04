@@ -49,3 +49,64 @@ class SqliteRestaurantRepository(RestaurantRepository):
 
         except sqlite3.Error as e:
             raise RepositoryError(f"Failed to initialize database: {e}")
+
+    def _row_to_restaurant(self, row: sqlite3.Row) -> Restaurant:
+        """ Convert a database row to a Restaurant object. """
+        return Restaurant(
+            id=row['id'],
+            name=row['name'],
+            location=row['location'],
+            country=row['country'],
+            cuisine_type=row['cuisine_type'],
+            price_range=row['price_range'],
+            phone=row['phone'],
+            website=row['website'],
+            social_media=row['social_media']
+        )
+
+    def add(self, restaurant: Restaurant) -> Restaurant:
+        """
+        Add a new restaurant to the database
+        Raises: RepositoryError: If database operation fails.
+        """
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                INSERT INTO restaurants (
+                        name, location, country, cuisine_type,
+                    price_range, phone, website, social_media
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                restaurant.name,
+                restaurant.location,
+                restaurant.country,
+                restaurant.cuisine_type,
+                restaurant.price_range,
+                restaurant.phone,
+                restaurant.website,
+                restaurant.social_media
+            ))
+
+            # Get the auto-generated ID
+            restaurant_id = cursor.lastrowid
+
+            conn.commit()
+            conn.close()
+
+            # Return a new Restaurant object with the ID set
+            return Restaurant(
+                id=restaurant_id,
+                name=restaurant.name,
+                location=restaurant.location,
+                country=restaurant.country,
+                cuisine_type=restaurant.cuisine_type,
+                price_range=restaurant.price_range,
+                phone=restaurant.phone,
+                website=restaurant.website,
+                social_media=restaurant.social_media
+            )
+
+        except sqlite3.Error as e:
+            raise RepositoryError(f"Failed to add restaurant: {e}")
