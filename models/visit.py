@@ -155,7 +155,7 @@ class Visit:
         """Returns the total cost formatted as currency or 'N/A'."""
         if self.total_cost is None:
             return "N/A"
-        return f"${self.total_cost:,.2f}"
+        return f"€{self.total_cost:,.2f}"
 
     def __str__(self) -> str:
         """String representation for display purposes."""
