@@ -156,3 +156,60 @@ class SqliteRestaurantRepository(RestaurantRepository):
 
         except sqlite3.Error as e:
             raise RepositoryError(f"Failed to get all restaurants: {e}")
+
+    def update(self, restaurant: Restaurant) -> bool:
+        """
+        Update an existing restaurant
+        Raises: RepositoryError: If database operation fails.
+        """
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                UPDATE restaurants
+                SET name = ?, location = ?, country = ?, cuisine_type = ?,
+                    price_range = ?, phone = ?, website = ?, social_media = ?
+                WHERE id = ?
+            """, (
+                restaurant.name,
+                restaurant.location,
+                restaurant.country,
+                restaurant.cuisine_type,
+                restaurant.price_range,
+                restaurant.phone,
+                restaurant.website,
+                restaurant.social_media,
+                restaurant.id
+            ))
+
+            rows_affected = cursor.rowcount
+
+            conn.commit()
+            conn.close()
+
+            return rows_affected > 0
+
+        except sqlite3.Error as e:
+            raise RepositoryError(f"Failed to update restaurant: {e}")
+
+    def delete(self, restaurant_id: int) -> bool:
+        """
+        Delete a restaurant ID
+        Raises: RepositoryError: If database operation fails.
+        """
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+
+            cursor.execute("DELETE FROM restaurants WHERE id = ?", (restaurant_id,))
+
+            rows_affected = cursor.rowcount
+
+            conn.commit()
+            conn.close()
+
+            return rows_affected > 0
+
+        except sqlite3.Error as e:
+            raise RepositoryError(f"Failed to delete restaurant: {e}")
