@@ -104,3 +104,125 @@ class RestaurantRepository(ABC):
             RepositoryError: If the operation fails
         """
         pass
+
+
+class VisitRepository(ABC):
+    """
+    Abstract base class for visit data access
+    Defines the interface for repository implementations.
+    """
+
+    @abstractmethod
+    def add(self, visit: Visit) -> Visit:
+        """
+        Add a new visit to the data store.
+        Args:
+            visit: Visit object (id will be ignored/assigned)
+        Returns:
+            Visit object with assigned ID
+        Raises:
+            RepositoryError: If the operation fails
+        """
+        pass
+
+    @abstractmethod
+    def get_by_id(self, visit_id: int) -> Optional[Visit]:
+        """
+        Retrieve a visit by its ID.
+        Args:
+            visit_id: Unique identifier
+        Returns:
+            Visit object if found, None otherwise
+        Raises:
+            RepositoryError: If the operation fails
+        """
+        pass
+
+    @abstractmethod
+    def get_by_restaurant_id(self, restaurant_id: int) -> Optional[Visit]:
+        """
+        Retrieve the visit for a specific restaurant.
+        Args:
+            restaurant_id: ID of the restaurant
+        Returns:
+            Visit object if found, None otherwise
+        Raises:
+            RepositoryError: If the operation fails
+        """
+        pass
+
+    @abstractmethod
+    def get_all(self) -> List[Visit]:
+        """
+        Retrieve all visits.
+        Returns:
+            List of all Visit objects (empty list if none exist)
+        Raises:
+            RepositoryError: If the operation fails
+        """
+        pass
+
+    @abstractmethod
+    def update(self, visit: Visit) -> bool:
+        """
+        Update an existing visit.
+        Args:
+            visit: Visit object with ID set
+        Returns:
+            True if updated successfully, False if not found
+        Raises:
+            RepositoryError: If the operation fails
+        """
+        pass
+
+    @abstractmethod
+    def delete(self, visit_id: int) -> bool:
+        """
+        Delete a visit by ID.
+        Args:
+            visit_id: Unique identifier
+        Returns:
+            True if deleted successfully, False if not found
+        Raises:
+            RepositoryError: If the operation fails
+        """
+        pass
+
+    @abstractmethod
+    def delete_by_restaurant_id(self, restaurant_id: int) -> bool:
+        """
+        Delete the visit associated with a restaurant.
+        Args:
+            restaurant_id: ID of the restaurant
+        Returns:
+            True if deleted successfully, False if not found
+        Raises:
+            RepositoryError: If the operation fails
+        """
+        pass
+
+    @abstractmethod
+    def filter_by_meal_type(self, meal_type: str) -> List[Visit]:
+        """
+        Filter visits by meal type.
+        Args:
+            meal_type: Meal type (e.g., "breakfast", "lunch", "dinner")
+        Returns:
+            List of visits matching that meal type (empty if none)
+        Raises:
+            RepositoryError: If the operation fails
+        """
+        pass
+
+    @abstractmethod
+    def filter_by_rating(self, min_rating: int) -> List[Visit]:
+        """
+        Filter visits by minimum rating.
+        Args:
+            min_rating: Minimum rating (1-5)
+        Returns:
+            List of visits with rating >= min_rating (empty if none)
+        Raises:
+            RepositoryError: If the operation fails
+        """
+        pass
