@@ -250,13 +250,19 @@ class VisitService:
 
     def delete_visit(self, visit_id: int) -> None:
         """
-        Delete a visit by ID
+        Delete a visit by ID.
         Raises: NotFoundError: If visit doesn't exist
         RepositoryError: If database operation fails
         """
         # Verify visit exists
         visit = self._visit_repo.get_by_id(visit_id)
         if visit is None:
+            raise NotFoundError(f"Visit with ID {visit_id} not found")
+
+        # Delete the visit
+        success = self._visit_repo.delete(visit_id)
+
+        if not success:
             raise NotFoundError(f"Visit with ID {visit_id} not found")
 
     def delete_visit_for_restaurant(self, restaurant_id: int) -> None:

@@ -99,10 +99,12 @@ class CLIHandler:
             print(f"\nTotal restaurants: {len(restaurants)}\n")
             for i, r in enumerate(restaurants, 1):
                 print(f"{i}. {r}")
-                if r.cuisine_type:
-                    print(f"   Cuisine: {r.cuisine_type}")
                 if r.phone:
                     print(f"   Phone: {r.phone}")
+                if r.website:
+                    print(f"   Website: {r.website}")
+                if r.social_media:
+                    print(f"   Social: {r.social_media}")
                 print()
 
         except Exception as e:
@@ -257,7 +259,7 @@ class CLIHandler:
             self.print_error(str(e))
         except BusinessRuleViolationError as e:
             self.print_error(str(e))
-            print("\nThis restaurant already has a visit. Update it instead.")
+            print("\nTip: Delete the existing visit first if you want to add a new one.")
         except ValidationError as e:
             self.print_error(str(e))
         except ValueError as e:
@@ -281,7 +283,9 @@ class CLIHandler:
                 # Get the restaurant for this visit
                 restaurant = self.restaurant_service.get_restaurant(v.restaurant_id)
 
-                print(f"{i}. {restaurant.name}")
+                cuisine = f" ({restaurant.cuisine_type})" if restaurant.cuisine_type else ""
+                print(f"{i}. {restaurant.name}{cuisine} - {restaurant.country}")
+
                 print(f"   {v}")
                 if v.service_rating:
                     print(f"   Service: {v.get_service_rating_stars()}")

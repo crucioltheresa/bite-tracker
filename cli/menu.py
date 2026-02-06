@@ -96,7 +96,11 @@ class MainMenu:
         """Exit the application gracefully."""
         print("\n" + "=" * 60)
         print("  Thank you for using Bite Tracker!")
+
         if self.data_modified:
-            print("  Your restaurant visits have been saved.")
+            print("  Your changes have been saved.")
+        else:
+            print("  Come back soon to track more visits!")
+
         print("=" * 60 + "\n")
         self.running = False
