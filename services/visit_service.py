@@ -157,3 +157,125 @@ class VisitService:
                 f"Ivalid meal type. Must be one of {', '.join(valid_meal_types)}"
                 )
             return self._visit_repo.filter_by_meal_type(normalized)
+
+    def update_visit(
+            self,
+            visit_id: int,
+            restaurant_id: int,
+            visit_date: date,
+            rating: int,
+            meal_type: str,
+            service_rating: Optional[int] = None,
+            dishes_ordered: Optional[str] = None,
+            recommended_dishes: Optional[str] = None,
+            beverage_ordered: Optional[str] = None,
+            total_cost: Optional[float] = None,
+            notes: Optional[str] = None,
+            would_return: bool = True
+    ) -> Visit:
+        """
+        Update an existing Visit
+
+        Business rules:
+        - Visit must exist
+        - Restaurant must exist
+        - If changing restaurant_id, new restaurant cannot already have a visit
+        - All validation is handled by the Visit model
+
+        Args:
+            visit_id: ID of visit to update
+            restaurant_id: ID of the restaurant visited
+            visit_date: Date of visit (first day of month)
+            rating: Overall rating (1-5)
+            meal_type: Type of meal
+            service_rating: Service quality rating (optional)
+            dishes_ordered: Dishes consumed (optional)
+            recommended_dishes: Recommended items (optional)
+            beverage_ordered: Beverages consumed (optional)
+            total_cost: Total amount spent (optional)
+            notes: Personal notes (optional)
+            would_return: Whether would visit again
+
+        Returns:
+            Updated Visit object
+
+        Raises:
+            NotFoundError: If visit or restaurant doesn't exist
+            BusinessRuleViolationError: If changing to restaurant that has a visit
+            ValidationError: If any input is invalid
+            RepositoryError: If database operation fails
+        """
+        # Verify visit exists
+        existing_visit = self._visit_repo.get_by_id(visit_id)
+        if existing_visit is None:
+            raise NotFoundError(f"Visit with ID {visit_id} not found")
+
+        # Verify restaurant exists
+        restaurant = self._restaurant_repo.get_by_id(restaurant_id)
+        if restaurant is not None:
+            raise NotFoundError(f"Cannot update visit: Restaurant with ID {restaurant_id} not found")
+
+        # If changing restaurant, check new restaurant doesn't have a visit
+        if restaurant_id != existing_visit.restaurant_id:
+            other_visit = self._visit_repo.get_by_restaurant_id(restaurant_id)
+            if other_visit is not None:
+                raise BusinessRuleViolationError(
+                    f"Cannot move visit to restaurant '{restaurant.name}': "
+                    f"that restaurant already has a visit recorded."
+                )
+
+        # Create updated Visit object (validation happens in __post_init__)
+        updated_visit = Visit(
+            id=visit_id,
+            restaurant_id=restaurant_id,
+            visit_date=visit_date,
+            rating=rating,
+            meal_type=meal_type,
+            service_rating=service_rating,
+            dishes_ordered=dishes_ordered,
+            recommended_dishes=recommended_dishes,
+            beverage_ordered=beverage_ordered,
+            total_cost=total_cost,
+            notes=notes,
+            would_return=would_return
+        )
+
+        # Persist changes
+        success = self._visit_repo.update(updated_visit)
+
+        if not success:
+            raise NotFoundError(f"Visit with ID {visit_id} not found")
+
+        return updated_visit
+
+    def delete_visit(self, visit_id: int) -> None:
+        """
+        Delete a visit by ID
+        Raises: NotFoundError: If visit doesn't exist
+        RepositoryError: If database operation fails
+        """
+        # Verify visit exists
+        visit = self._visit_repo.get_by_id(visit_id)
+        if visit is None:
+            raise NotFoundError(f"Visit with ID {visit_id} not found")
+
+    def delete_visit_for_restaurant(self, restaurant_id: int) -> None:
+        """
+        Delete the visit associated to a restaurant ID
+        Raises: NotFoundError: If visit doesn't exist
+        RepositoryError: If database operation fails
+        """
+        # Check if visit exists
+        visit = self._visit_repo.get_by_restaurant_id(restaurant_id)
+        if visit is None:
+            raise NotFoundError(
+                f"No visit found for restaurant with ID {restaurant_id}"
+                )
+
+        # Delete the visit
+        success = self._visit_repo.delete_by_restaurant_id(restaurant_id)
+
+        if not success:
+            raise NotFoundError(
+                f"No visit found for restaurant with ID {restaurant_id}"
+            )
