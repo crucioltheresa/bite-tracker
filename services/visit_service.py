@@ -104,3 +104,56 @@ class VisitService:
 
         # Persist to database
         return self._visit_repo.add(visit)
+
+    def get_visit(self, visit_id: int) -> Visit:
+        """
+        Get a visit by ID
+        Raises: NotFoundError if visit doesn't exist
+        RepositoryError if database operation fails
+        """
+        visit = self._visit_repo.get_by_id(visit_id)
+        if visit is None:
+            raise NotFoundError(f"Visit with ID {visit_id} not found.")
+        return visit
+
+    def get_visit_for_restaurant(self, restaurant_id: int) -> Optional[Visit]:
+        """
+        Get the visit for a specific restaurant.
+        Raises: RepositoryError if database operation fails
+        """
+        return self._visit_repo.get_by_restaurant_id(restaurant_id)
+
+    def get_all_visits(self) -> List[Visit]:
+        """
+        Get all visits.
+        Raises: RepositoryError if database operation fails
+        """
+        return self._visit_repo.get_all()
+
+    def get_top_rated_visits(self, min_rating: int = 5) -> List[Visit]:
+        """
+        Get visits with a minimum rating.
+        Raises: RepositoryError if database operation fails
+        """
+        if not isinstance(self, min_rating, int) or min_rating not in [1, 2, 3, 4, 5]:
+            raise ValidationError("Mininum rating must be between 1 and 5")
+
+        return self._visit_repo.filter_by_rating(min_rating)
+
+    def get_visit_by_meal_type(self, meal_type: str) -> List[Visit]:
+        """
+        Filter visits by meal type
+        Raises: ValidationError if meal_type is invalid
+        RepoditoryError if database operation fail
+        """
+        valid_meal_types = ['breakfast', 'lunch', 'dinner', 'brunch', 'other']
+
+        if not meal_type or not meal_type.strip():
+            raise ValidationError("Meal type cannot be empty")
+
+        normalized = meal_type.strip().lower()
+        if normalized not in valid_meal_types:
+            raise ValidationError(
+                f"Ivalid meal type. Must be one of {', '.join(valid_meal_types)}"
+                )
+            return self._visit_repo.filter_by_meal_type(normalized)
