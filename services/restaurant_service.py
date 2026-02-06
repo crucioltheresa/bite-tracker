@@ -110,7 +110,7 @@ class RestaurantService:
         if not country or not country.strip():
             raise ValidationError("Country cannot be empty")
 
-        return self._restaurant_repo.get_by_country(country.strip())
+        return self._restaurant_repo.filter_by_country(country.strip())
 
     def update_restaurant(
             self,

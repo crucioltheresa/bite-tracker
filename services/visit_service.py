@@ -135,7 +135,7 @@ class VisitService:
         Get visits with a minimum rating.
         Raises: RepositoryError if database operation fails
         """
-        if not isinstance(self, min_rating, int) or min_rating not in [1, 2, 3, 4, 5]:
+        if not isinstance(min_rating, int) or min_rating not in [1, 2, 3, 4, 5]:
             raise ValidationError("Mininum rating must be between 1 and 5")
 
         return self._visit_repo.filter_by_rating(min_rating)
@@ -212,7 +212,7 @@ class VisitService:
 
         # Verify restaurant exists
         restaurant = self._restaurant_repo.get_by_id(restaurant_id)
-        if restaurant is not None:
+        if restaurant is None:
             raise NotFoundError(f"Cannot update visit: Restaurant with ID {restaurant_id} not found")
 
         # If changing restaurant, check new restaurant doesn't have a visit
