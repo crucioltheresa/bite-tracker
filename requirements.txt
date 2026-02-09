@@ -1,14 +1,2 @@
-# Bite Tracker - Restaurant Visit & Review Manager
-# 
-# This application uses only Python standard library.
-# No external packages need to be installed.
-#
-# Required Python version: 3.8 or higher
-#
-# Standard library modules used:
-# - sqlite3 (database)
-# - datetime (date handling)
-# - dataclasses (domain models)
-# - typing (type hints)
-# - abc (abstract base classes)
-# - pathlib (file paths)
+# Bite Tracker - No external dependencies required
+# Uses Python standard library only
