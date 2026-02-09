@@ -1,9 +1,27 @@
-core.Microsoft*
-core.mongo*
-core.python*
-env.py
+# Python
 __pycache__/
 *.py[cod]
-node_modules/
-.github/
-.venv
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Database
+data/*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Personal data (optional - keep your restaurants private)
+my_restaurants.json
