@@ -1,27 +1,8 @@
-# Python
+core.Microsoft*
+core.mongo*
+core.python*
+env.py
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-.Python
-venv/
-env/
-ENV/
-
-# Database
-data/*.db
-*.sqlite
-*.sqlite3
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Personal data
-my_restaurants.json
+node_modules/
+.github/
