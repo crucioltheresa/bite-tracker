@@ -20,7 +20,7 @@ class Visit:
     - Overall rating must be 1-5 (required)
     - Service rating must be 1-5 if provided (optional)
     - Meal type must be valid option (breakfast/lunch/dinner/brunch/other)
-    - Dishes, beverages, recommended dishes are optional text <= 500 chars
+    - Dishes, beverages, recommended dishes are optional text <= 2000 chars
     - Total cost is optional, must be positive if provided
     - Notes are optional but if provided must be <= 1000 chars
     - Would return defaults to True
@@ -97,9 +97,9 @@ class Visit:
         if self.dishes_ordered:
             if not isinstance(self.dishes_ordered, str):
                 raise ValidationError("Dishes ordered must be a string.")
-            if len(self.dishes_ordered) > 500:
+            if len(self.dishes_ordered) > 2000:
                 raise ValidationError("Dishes ordered must not\
-                                    exceed 500 chars.")
+                                    exceed 2000 chars.")
             self.dishes_ordered = self.dishes_ordered.strip()
 
         if self.recommended_dishes:
@@ -113,9 +113,9 @@ class Visit:
         if self.beverage_ordered:
             if not isinstance(self.beverage_ordered, str):
                 raise ValidationError("Beverage ordered must be a string.")
-            if len(self.beverage_ordered) > 500:
+            if len(self.beverage_ordered) > 2000:
                 raise ValidationError("Beverage ordered must not\
-                                    exceed 500 chars.")
+                                    exceed 2000 chars.")
             self.beverage_ordered = self.beverage_ordered.strip()
 
         if self.total_cost is not None:

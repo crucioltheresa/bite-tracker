@@ -104,7 +104,7 @@ class CLIHandler:
                 if r.website:
                     print(f"   Website: {r.website}")
                 if r.social_media:
-                    print(f"   Social: {r.social_media}")
+                    print(f"   Instagram: {r.social_media}")
                 print()
 
         except Exception as e:
@@ -290,11 +290,14 @@ class CLIHandler:
                 if v.service_rating:
                     print(f"   Service: {v.get_service_rating_stars()}")
                 if v.dishes_ordered:
-                    print(f"   Dishes: {v.dishes_ordered}")
+                    # Truncate if too long (80 char limit)
+                    dishes_display = v.dishes_ordered[:70] + "..." if len(v.dishes_ordered) > 70 else v.dishes_ordered
+                    print(f"   Dishes: {dishes_display}")
                 if v.total_cost:
                     print(f"   Cost: {v.get_formatted_cost()}")
                 if v.notes:
-                    print(f"   Notes: {v.notes}")
+                    notes_display = v.notes[:70] + "..." if len(v.notes) > 70 else v.notes
+                    print(f"   Notes: {notes_display}")
                 print()
 
         except Exception as e:
