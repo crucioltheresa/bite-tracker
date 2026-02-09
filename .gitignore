@@ -23,5 +23,5 @@ data/*.db
 .DS_Store
 Thumbs.db
 
-# Personal data (optional - keep your restaurants private)
+# Personal data
 my_restaurants.json
