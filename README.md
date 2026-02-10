@@ -50,23 +50,29 @@ Built as a portfolio project for Code Institute, this application demonstrates:
 *Visit history with ratings and notes*
 
 ![Search Functionality](screenshots/search_results.png)
+
 *Search restaurants by name with case-insensitive partial matching*
 
 ![Filter by Country](screenshots/filter_country.png)
+
 *Filter restaurants by location - showing Italian restaurants*
 
 ![Application Startup](screenshots/startup.png)
+
 *Clean initialization with database setup and service layer loading*
 
 ### Live Heroku Deployment
 
 ![Heroku Live Demo](screenshots/heroku_restaurants.png)
+
 *Live deployment on Heroku showing restaurant catalog in browser terminal*
 
 ![Heroku Visit Tracking](screenshots/heroku_visits.png)
+
 *Visit tracking functionality working on live Heroku deployment*
 
 ![Heroku Search Feature](screenshots/heroku_search.png)
+
 *Search functionality demonstrated on live Heroku instance*
 
 ---
