@@ -2,6 +2,8 @@
 
 ## Restaurant Visit & Review Manager
 
+**🌐 [Live Demo on Heroku](https://bite-tracker-2800389c963c.herokuapp.com/)** | **📁 [GitHub Repository](https://github.com/crucioltheresa/bite-tracker)**
+
 A professional CLI application for tracking restaurant visits and reviews, built with clean architecture principles and layered design patterns.
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
@@ -46,6 +48,26 @@ Built as a portfolio project for Code Institute, this application demonstrates:
 ![View Visits](screenshots/view_visits.png)
 
 *Visit history with ratings and notes*
+
+![Search Functionality](screenshots/search_results.png)
+*Search restaurants by name with case-insensitive partial matching*
+
+![Filter by Country](screenshots/filter_country.png)
+*Filter restaurants by location - showing Italian restaurants*
+
+![Application Startup](screenshots/startup.png)
+*Clean initialization with database setup and service layer loading*
+
+### Live Heroku Deployment
+
+![Heroku Live Demo](screenshots/heroku_restaurants.png)
+*Live deployment on Heroku showing restaurant catalog in browser terminal*
+
+![Heroku Visit Tracking](screenshots/heroku_visits.png)
+*Visit tracking functionality working on live Heroku deployment*
+
+![Heroku Search Feature](screenshots/heroku_search.png)
+*Search functionality demonstrated on live Heroku instance*
 
 ---
 
@@ -674,6 +696,58 @@ data/bite_tracker.db
 **To backup your data:** Simply copy this file
 **To reset:** Delete this file (will be recreated on next run)
 **To transfer:** Copy this file to another installation
+
+---
+
+---
+
+## Live Deployment
+
+### Heroku Demo
+
+**🌐 [Live Application on Heroku](https://bite-tracker-2800389c963c.herokuapp.com/)**
+
+The application is deployed on Heroku and accessible via a browser-based terminal interface. The live demo includes sample data demonstrating all features.
+
+**Try it now:**
+1. Click the link above
+2. Wait for the terminal to load (may take a few seconds on first visit)
+3. Navigate using the numbered menu options
+4. Test adding restaurants, recording visits, and searching
+
+---
+
+### Deployment Notes
+
+**Technology:**
+- Deployed using Heroku's Python and Node.js buildpacks
+- Browser terminal provided by Code Institute's Python template
+- Allows CLI interaction through web interface
+
+**Data Persistence:**
+Due to Heroku's ephemeral filesystem, the SQLite database resets when the dyno restarts (typically every 24 hours or on redeployment). This is a known limitation of SQLite on Heroku.
+
+**Live Demo Data:**
+- Sample restaurants and visits are pre-loaded for demonstration
+- You can add your own test data through the interface
+- Data will persist during your session but may reset later
+
+**Full Dataset:**
+The complete collection of 25+ restaurants with detailed visit records is available when running locally:
+```bash
+git clone <repository-url>
+cd bite-tracker
+python import_data.py
+python run.py
+```
+
+**Production Considerations:**
+For a production deployment requiring persistent data, the application would need:
+- Migration to PostgreSQL (Heroku Postgres addon)
+- Or deployment to a platform with persistent storage
+- Database migration scripts to preserve data
+
+This limitation is acceptable for educational/portfolio projects and does not affect the demonstration of the application's architecture and functionality.
 
 ---
 
